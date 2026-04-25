@@ -1,0 +1,167 @@
+{
+  "name": "Contact Form - Webhook to Email",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "contact-form",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "f2a2b3c4-1111-4a1a-8b1a-111111111111",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "contact-form-webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b1",
+              "name": "name",
+              "value": "={{ ($json.body.name || $json.name || 'N/A').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') }}",
+              "type": "string"
+            },
+            {
+              "id": "b2",
+              "name": "email",
+              "value": "={{ $json.body.email || $json.email || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "b3",
+              "name": "message",
+              "value": "={{ ($json.body.message || $json.message || 'N/A').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\\n/g, '<br>') }}",
+              "type": "string"
+            },
+            {
+              "id": "b4",
+              "name": "timestamp",
+              "value": "={{ $now.setZone('Asia/Kolkata').toFormat('yyyy-MM-dd HH:mm:ss') }} IST",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f2a2b3c4-2222-4a2a-8b2a-222222222222",
+      "name": "Normalize Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $env.SMTP_FROM_EMAIL }}",
+        "toEmail": "={{ $env.ADMIN_EMAIL }}",
+        "subject": "=New Contact Form Submission from {{ $json.name }}",
+        "emailType": "html",
+        "message": "=<h2 style=\"color:#333;margin-bottom:16px\">New Contact Form Submission</h2>\n<table style=\"border-collapse:collapse;width:100%;max-width:600px\">\n  <tr style=\"background:#f5f5f5\">\n    <td style=\"padding:10px 14px;font-weight:bold;width:100px\">Name</td>\n    <td style=\"padding:10px 14px\">{{ $json.name }}</td>\n  </tr>\n  <tr>\n    <td style=\"padding:10px 14px;font-weight:bold\">Email</td>\n    <td style=\"padding:10px 14px\"><a href=\"mailto:{{ $json.email }}\">{{ $json.email }}</a></td>\n  </tr>\n  <tr style=\"background:#f5f5f5\">\n    <td style=\"padding:10px 14px;font-weight:bold\">Received</td>\n    <td style=\"padding:10px 14px\">{{ $json.timestamp }}</td>\n  </tr>\n</table>\n<h3 style=\"color:#333;margin-top:24px\">Message</h3>\n<p style=\"background:#f9f9f9;padding:14px;border-left:3px solid #ccc;margin:0\">{{ $json.message }}</p>",
+        "options": {}
+      },
+      "id": "f2a2b3c4-3333-4a3a-8b3a-333333333333",
+      "name": "Send Admin Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [680, 300],
+      "credentials": {
+        "smtp": {
+          "id": "REPLACE_WITH_YOUR_SMTP_CREDENTIAL_ID",
+          "name": "SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $env.SMTP_FROM_EMAIL }}",
+        "toEmail": "={{ $('Normalize Fields').item.json.email }}",
+        "subject": "=Got your message, {{ $('Normalize Fields').item.json.name }}!",
+        "emailType": "html",
+        "message": "=<p>Hi {{ $('Normalize Fields').item.json.name }},</p>\n<p>Thanks for reaching out — I've received your message and will get back to you within <strong>24 hours</strong>.</p>\n<p>Talk soon,<br><strong>Mohammed Yusuf</strong><br>Backend Engineer</p>",
+        "options": {}
+      },
+      "id": "f2a2b3c4-4444-4a4a-8b4a-444444444444",
+      "name": "Send Auto-Reply",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [900, 300],
+      "credentials": {
+        "smtp": {
+          "id": "REPLACE_WITH_YOUR_SMTP_CREDENTIAL_ID",
+          "name": "SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"success\",\n  \"message\": \"Message received. You'll get a reply within 24 hours.\"\n}",
+        "options": {}
+      },
+      "id": "f2a2b3c4-5555-4a5a-8b5a-555555555555",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1120, 300]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalize Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Fields": {
+      "main": [
+        [
+          {
+            "node": "Send Admin Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Admin Email": {
+      "main": [
+        [
+          {
+            "node": "Send Auto-Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Auto-Reply": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

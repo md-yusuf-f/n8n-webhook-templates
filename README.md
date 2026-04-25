@@ -11,7 +11,7 @@ Production-ready n8n workflow templates for capturing webhook events and routing
 | # | Template | Use Case |
 |---|----------|----------|
 | 01 | **Lead Capture → Telegram** | Notify yourself instantly when a new lead fills your contact form |
-| 02 | _(Coming soon)_ Contact Form → Email | Auto-reply + admin notification |
+| 02 | **Contact Form → Email** | Auto-reply to lead + formatted admin notification via SMTP |
 | 03 | _(Coming soon)_ Order Notification → Multi-channel | E-commerce order alerts |
 | 04 | _(Coming soon)_ Error Alerter | Capture errors from any app and ping Telegram |
 
