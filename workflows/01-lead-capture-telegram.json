@@ -1,0 +1,152 @@
+{
+  "name": "Lead Capture - Webhook to Telegram",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "new-lead",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "f1a2b3c4-1111-4a1a-8b1a-111111111111",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ],
+      "webhookId": "new-lead-webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1",
+              "name": "name",
+              "value": "={{ $json.body.name || $json.name || 'N/A' }}",
+              "type": "string"
+            },
+            {
+              "id": "a2",
+              "name": "email",
+              "value": "={{ $json.body.email || $json.email || 'N/A' }}",
+              "type": "string"
+            },
+            {
+              "id": "a3",
+              "name": "project_type",
+              "value": "={{ $json.body.project_type || $json.project_type || 'N/A' }}",
+              "type": "string"
+            },
+            {
+              "id": "a4",
+              "name": "budget",
+              "value": "={{ $json.body.budget || $json.budget || 'N/A' }}",
+              "type": "string"
+            },
+            {
+              "id": "a5",
+              "name": "timestamp",
+              "value": "={{ $now.setZone('Asia/Kolkata').toFormat('yyyy-MM-dd HH:mm:ss') }} IST",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f1a2b3c4-2222-4a2a-8b2a-222222222222",
+      "name": "Normalize Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=🔔 *New Lead Received!*\n\n👤 *Name:* {{ $json.name }}\n📧 *Email:* {{ $json.email }}\n🛠 *Project:* {{ $json.project_type }}\n💰 *Budget:* {{ $json.budget }}\n🕐 *Time:* {{ $json.timestamp }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "f1a2b3c4-3333-4a3a-8b3a-333333333333",
+      "name": "Send Telegram Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        680,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "REPLACE_WITH_YOUR_CREDENTIAL_ID",
+          "name": "Telegram Lead Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"success\",\n  \"message\": \"Lead received and notification sent\",\n  \"lead\": {\n    \"name\": \"{{ $('Normalize Fields').item.json.name }}\",\n    \"email\": \"{{ $('Normalize Fields').item.json.email }}\",\n    \"project_type\": \"{{ $('Normalize Fields').item.json.project_type }}\",\n    \"budget\": \"{{ $('Normalize Fields').item.json.budget }}\",\n    \"timestamp\": \"{{ $('Normalize Fields').item.json.timestamp }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "f1a2b3c4-4444-4a4a-8b4a-444444444444",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        900,
+        300
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalize Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Fields": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Telegram Message": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

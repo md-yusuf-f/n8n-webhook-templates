@@ -1,0 +1,30 @@
+# Environment files with secrets
+.env
+.env.local
+.env.production
+
+# n8n local data
+.n8n/
+n8n_data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Cloudflare tunnel credentials
+*.json
+!workflows/*.json
+
+# Temp files
+*.tmp
+*.bak
