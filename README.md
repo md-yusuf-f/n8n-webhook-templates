@@ -119,7 +119,7 @@ Detailed setup walkthrough → [docs/setup.md](docs/setup.md)
 
 Need a custom workflow built for your business? I build n8n automations, Telegram bots, and backend systems for clients worldwide.
 
-- **Upwork**: [Mohammed Y. — Backend Engineer](https://www.upwork.com/freelancers/your-profile)
+- **Upwork**: [Mohammed Yusuf. — Backend Engineer](https://www.upwork.com/freelancers/~0130a44ece6832db4f?mp_source=share)
 - **Fiverr**: [iyusufsaf](https://www.fiverr.com/iyusufsaf)
 - **Email**: mohammedyusuf1799@gmail.com
 
