@@ -2,7 +2,7 @@
 
 Production-ready n8n workflow templates for capturing webhook events and routing them to Telegram, email, Slack, and more. Built for freelancers, agencies, and SaaS founders who want instant lead notifications without writing custom backends.
 
-> Built and maintained by [Mohammed Yusuf](https://github.com/yourusername) — Backend engineer specializing in n8n automation, Telegram bots, and self-hosted infrastructure.
+> Built and maintained by [Mohammed Yusuf](https://github.com/md-yusuf-f) — Backend engineer specializing in n8n automation, Telegram bots, and self-hosted infrastructure.
 
 ---
 
@@ -47,7 +47,7 @@ When a webhook fires, you get a Telegram message like this within 1 second:
 
 1. **Clone this repo**
    ```bash
-   git clone https://github.com/yourusername/n8n-webhook-templates.git
+   git clone https://github.com/md-yusuf-f/n8n-webhook-templates.git
    cd n8n-webhook-templates
    ```
 
@@ -119,7 +119,7 @@ Detailed setup walkthrough → [docs/setup.md](docs/setup.md)
 
 Need a custom workflow built for your business? I build n8n automations, Telegram bots, and backend systems for clients worldwide.
 
-- **Upwork**: [Mohammed Yusuf. — Backend Engineer](https://www.upwork.com/freelancers/~0130a44ece6832db4f?mp_source=share)
+- **Upwork**: [Mohammed Yusuf — Backend Engineer](https://www.upwork.com/freelancers/~0130a44ece6832db4f)
 - **Fiverr**: [iyusufsaf](https://www.fiverr.com/iyusufsaf)
 - **Email**: mohammedyusuf1799@gmail.com
 
