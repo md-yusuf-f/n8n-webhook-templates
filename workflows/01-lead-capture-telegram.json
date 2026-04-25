@@ -25,25 +25,25 @@
             {
               "id": "a1",
               "name": "name",
-              "value": "={{ $json.body.name || $json.name || 'N/A' }}",
+              "value": "={{ ($json.body.name || $json.name || 'N/A').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') }}",
               "type": "string"
             },
             {
               "id": "a2",
               "name": "email",
-              "value": "={{ $json.body.email || $json.email || 'N/A' }}",
+              "value": "={{ ($json.body.email || $json.email || 'N/A').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') }}",
               "type": "string"
             },
             {
               "id": "a3",
               "name": "project_type",
-              "value": "={{ $json.body.project_type || $json.project_type || 'N/A' }}",
+              "value": "={{ ($json.body.project_type || $json.project_type || 'N/A').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') }}",
               "type": "string"
             },
             {
               "id": "a4",
               "name": "budget",
-              "value": "={{ $json.body.budget || $json.budget || 'N/A' }}",
+              "value": "={{ ($json.body.budget || $json.budget || 'N/A').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') }}",
               "type": "string"
             },
             {
@@ -68,9 +68,9 @@
     {
       "parameters": {
         "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
-        "text": "=🔔 *New Lead Received!*\n\n👤 *Name:* {{ $json.name }}\n📧 *Email:* {{ $json.email }}\n🛠 *Project:* {{ $json.project_type }}\n💰 *Budget:* {{ $json.budget }}\n🕐 *Time:* {{ $json.timestamp }}",
+        "text": "=🔔 <b>New Lead Received!</b>\n\n👤 <b>Name:</b> {{ $json.name }}\n📧 <b>Email:</b> {{ $json.email }}\n🛠 <b>Project:</b> {{ $json.project_type }}\n💰 <b>Budget:</b> {{ $json.budget }}\n🕐 <b>Time:</b> {{ $json.timestamp }}",
         "additionalFields": {
-          "parse_mode": "Markdown"
+          "parse_mode": "HTML"
         }
       },
       "id": "f1a2b3c4-3333-4a3a-8b3a-333333333333",
