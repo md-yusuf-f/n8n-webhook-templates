@@ -31,7 +31,7 @@ When a webhook fires, you get a Telegram message like this within 1 second:
 🕐 Time: 2026-04-25 08:52:20 IST
 ```
 
-![Telegram Demo](docs/demo.png)
+![Telegram Demo](docs/screenshot.png)
 
 ---
 
