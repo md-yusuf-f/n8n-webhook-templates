@@ -1,84 +1,86 @@
 # n8n Webhook Templates
 
-Production-ready n8n workflow templates for capturing webhook events and routing them to Telegram, email, Slack, and more. Built for freelancers, agencies, and SaaS founders who want instant lead notifications without writing custom backends.
+Reusable n8n workflows for capturing webhook events and routing them to Telegram or email without writing a custom backend.
 
-> Built and maintained by [Mohammed Yusuf](https://github.com/md-yusuf-f) — Backend engineer specializing in n8n automation, Telegram bots, and self-hosted infrastructure.
+This repo is aimed at freelancers, agencies, and small product teams that want production-ready lead capture automations they can import, configure, and ship quickly.
 
----
+## What is included
 
-## What's Inside
+| Workflow | File | Purpose |
+| --- | --- | --- |
+| Lead Capture -> Telegram | `workflows/01-lead-capture-telegram.json` | Sends instant Telegram alerts for new inbound leads |
+| Contact Form -> Email | `workflows/02-contact-form-email.json` | Sends an admin email plus an automatic reply to the sender |
 
-| # | Template | Use Case |
-|---|----------|----------|
-| 01 | **Lead Capture → Telegram** | Notify yourself instantly when a new lead fills your contact form |
-| 02 | **Contact Form → Email** | Auto-reply to lead + formatted admin notification via SMTP |
-| 03 | _(Coming soon)_ Order Notification → Multi-channel | E-commerce order alerts |
-| 04 | _(Coming soon)_ Error Alerter | Capture errors from any app and ping Telegram |
+## Business value
 
----
+- Replaces ad hoc form handling with a reusable workflow template.
+- Helps respond faster to leads without maintaining a custom notification service.
+- Works well for self-hosted n8n setups behind Cloudflare Tunnel or a reverse proxy.
+
+## Repo structure
+
+```text
+workflows/   importable n8n workflow JSON files
+docs/        screenshots and deployment notes
+examples/    sample test commands
+.env.example example environment variables
+```
 
 ## Demo
 
-When a webhook fires, you get a Telegram message like this within 1 second:
+When a lead webhook fires, the Telegram workflow sends a notification like this:
 
-```
-🔔 New Lead Received!
+```text
+New Lead Received!
 
-👤 Name: Test Client
-📧 Email: test@example.com
-🛠 Project: Telegram Bot
-💰 Budget: $500
-🕐 Time: 2026-04-25 08:52:20 IST
+Name: Test Client
+Email: test@example.com
+Project: Telegram Bot
+Budget: $500
+Time: 2026-04-25 08:52:20 IST
 ```
 
 ![Telegram Demo](docs/screenshot.png)
 
----
-
-## Quick Start (5 minutes)
+## Quick start
 
 ### Prerequisites
 
-- n8n instance (self-hosted or cloud) — version 1.x or later
-- A Telegram bot token from [@BotFather](https://t.me/BotFather)
-- Your Telegram chat ID (get it from [@userinfobot](https://t.me/userinfobot))
+- n8n 1.x or later
+- A Telegram bot token from [@BotFather](https://t.me/BotFather) for workflow 01
+- Your Telegram chat ID from [@userinfobot](https://t.me/userinfobot)
+- SMTP credentials configured in n8n for workflow 02
 
 ### Setup
 
-1. **Clone this repo**
-   ```bash
-   git clone https://github.com/md-yusuf-f/n8n-webhook-templates.git
-   cd n8n-webhook-templates
-   ```
+1. Clone the repo.
 
-2. **Set environment variables in n8n**
+```bash
+git clone https://github.com/md-yusuf-f/n8n-webhook-templates.git
+cd n8n-webhook-templates
+```
 
-   Add to your n8n `.env` or Docker environment:
-   ```env
-   TELEGRAM_CHAT_ID=your_chat_id_here
-   ```
+2. Copy values from `.env.example` into your n8n environment or Docker setup.
 
-3. **Create Telegram credential in n8n**
-   - Settings → Credentials → New → Telegram API
-   - Paste your bot token
-   - Name it `Telegram Lead Bot`
+3. Create the required n8n credentials.
 
-4. **Import the workflow**
-   - Workflows → Import from File
-   - Select `workflows/01-lead-capture-telegram.json`
-   - Open the Telegram node, re-select your credential from the dropdown
+- `Telegram API` credential named `Telegram Lead Bot`
+- `SMTP` credential for outbound email
 
-5. **Activate the workflow** (toggle top-right)
+4. Import one of the workflow JSON files from `workflows/`.
 
-   Your webhook URL: `https://your-n8n-domain/webhook/new-lead`
+5. Re-select the credential inside each imported node.
 
-### Test It
+6. Activate the workflow and test the webhook endpoint.
+
+### Test the Telegram workflow
 
 ```bash
 bash examples/test-curl.sh https://your-n8n-domain
 ```
 
-Or manually:
+Or send a request manually:
+
 ```bash
 curl -X POST https://your-n8n-domain/webhook/new-lead \
   -H "Content-Type: application/json" \
@@ -90,41 +92,28 @@ curl -X POST https://your-n8n-domain/webhook/new-lead \
   }'
 ```
 
----
+## Workflow flow
 
-## Architecture
-
-```
-┌─────────────┐     ┌──────────┐     ┌──────────────────┐     ┌──────────────┐     ┌──────────┐
-│  Your Form  │────▶│ Webhook  │────▶│ Normalize Fields │────▶│ Send Telegram│────▶│ Response │
-│  / API call │     │  Trigger │     │   (Set node)     │     │   Message    │     │   JSON   │
-└─────────────┘     └──────────┘     └──────────────────┘     └──────────────┘     └──────────┘
+```text
+Webhook -> Normalize Fields -> Notification Node -> JSON Response
 ```
 
----
+## Production notes
 
-## Production Deployment
+- Keep secrets in n8n credentials or environment variables, not inside workflow JSON.
+- Restrict webhook exposure with Cloudflare Tunnel, a reverse proxy, or a webhook secret check.
+- Use the setup guide in [docs/setup.md](docs/setup.md) for self-hosted deployment details.
 
-The recommended setup for self-hosted n8n with secure webhook exposure:
+## Public portfolio note
 
-- **VPS**: Oracle Cloud (free tier works), Hetzner, or DigitalOcean
-- **n8n**: Docker container on `localhost:5678`
-- **TLS / Public access**: Cloudflare Tunnel (free, no inbound ports needed) **or** Traefik + Let's Encrypt
+This repository contains template workflows only. Credential IDs inside the JSON files are placeholders and must be replaced in your own n8n instance after import.
 
-Detailed setup walkthrough → [docs/setup.md](docs/setup.md)
+## Contact
 
----
-
-## Hire Me
-
-Need a custom workflow built for your business? I build n8n automations, Telegram bots, and backend systems for clients worldwide.
-
-- **Upwork**: [Mohammed Yusuf — Backend Engineer](https://www.upwork.com/freelancers/~0130a44ece6832db4f)
-- **Fiverr**: [iyusufsaf](https://www.fiverr.com/iyusufsaf)
-- **Email**: mohammedyusuf1799@gmail.com
-
----
+- GitHub: [md-yusuf-f](https://github.com/md-yusuf-f)
+- LinkedIn: [Mohammed Yusuf](https://www.linkedin.com/in/yusuf1799/)
+- Email: `mohammedyusuf1799@gmail.com`
 
 ## License
 
-MIT — use these templates in commercial projects, modify them, ship them. Attribution appreciated but not required.
+MIT. Use, modify, and ship these templates in commercial or personal projects.
